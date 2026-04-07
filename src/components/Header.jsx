@@ -4,6 +4,13 @@ export default function Header (props) {
 
     const [searchInput, setSearchInput] = useState("");
     
+     function handleSubmit(e) {
+    e.preventDefault();
+    props.handleSearch(searchInput.trim());
+    setSearchInput("")
+
+
+  }
     return (
         <section>
         <header>
@@ -14,7 +21,7 @@ export default function Header (props) {
         <div className="units">
             <img src="/images/icon-units.svg" alt="icon units logo" />
             <span>Units</span>
-            <img src="/public/images/icon-dropdown.svg" alt="drop down arrow" />
+            <img src="/images/icon-dropdown.svg" alt="drop down arrow" />
         </div>
         </header>
 
@@ -22,12 +29,8 @@ export default function Header (props) {
             <h1>How's the sky looking today?
 </h1>
 <form 
-onSubmit={(e) => { 
-    e.preventDefault()
-   props.handleSearch(searchInput)
+onSubmit={handleSubmit
 }
-}
-onChange={(e) => setSearchInput(e.target.input)}
 >
     <div className="search-input">
         <img
@@ -35,12 +38,15 @@ onChange={(e) => setSearchInput(e.target.input)}
         src="/images/icon-search.svg" alt="search icon" />
         <input 
         type="search"
-        placeholder={`Search for a place..`}
         value={searchInput}
+        placeholder={`Search for a place..`}
+        onChange={(e) => setSearchInput(e.target.value)}
         />
         
     </div>
-        <input type="submit" value="Search" />
+        <input type="submit" value="Search" 
+        disabled={!searchInput.trim()}
+        />
 
 </form>
         </div>

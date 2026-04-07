@@ -127,6 +127,116 @@ transform: translateY(-50%);
 }
 /* ---------------- MAIN CONTAINER ---------------- */
 
+.current-weather-top {
+  background-image: url(/images/bg-today-small.svg);
+  background-size:center;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 50vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.current-weather-top > h2 {
+  color: var(--clr-Neutral-0);
+  font-family: "Bricolage Grotesque", serif;
+  padding-bottom: 1rem;
+}
+
+.current-weather-top > .date {
+  color: var(--clr-Neutral-300);
+}
+
+.brightness {
+  display: flex;
+  align-items: center;
+  gap: 4.5rem;
+  padding-left: 2.5rem;
+}
+
+.sun-image {
+  width: 30%;
+  height: auto;
+}
+
+.temp {
+  font-size: 4.5rem;
+  color: var(--clr-Neutral-0);
+  font-family: "DM Sans";
+  font-weight: 700;
+}
+
+.current-weather-bottom {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 100px;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.feels_like,
+.humidity,
+.speed,
+.precipitation {
+  background-color: var(--clr-Neutral-700);
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1.5rem;
+  color: var(--clr-Blue-300);
+}
+
+.feels_like > span,
+.humidity > span,
+.speed > span,
+.precipitation > span {
+  font-size: 1.5rem;
+}
+
+.feels_like > p,
+.humidity > p,
+.speed > p,
+.precipitation > p {
+  color: var(--clr-Neutral-200);
+}
+
+/* ---------------- DAILY FORECAST ---------------- */
+
+.daily_forecast {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.day_card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1rem;
+  background-color: var(--clr-Neutral-700);
+  gap: 1.5rem;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+}
+
+.day_card   img {
+  width: 30%;
+  height: auto;
+  display: flex;
+  justify-self: center;
+}
 
 
 /* ---------------- FOOTER ---------------- */
