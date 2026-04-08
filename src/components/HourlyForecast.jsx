@@ -1,5 +1,5 @@
 import { useState } from "react";
-export default function HourlyForecast ({ forecastData }) {   
+export default function HourlyForecast ({ forecastData, unit }) {   
 
   const [selectedDay, setSelectedDay] = useState("");
 
@@ -51,6 +51,8 @@ const filteredData =
     return "/images/icon-unknown.webp";
   };
 
+  const unitSymbol = unit === "metric" ? "°" : "°";
+
   
 
 
@@ -92,7 +94,7 @@ const filteredData =
                     <p>{time}</p>
                    
                     </div>
-                     <p className="hour_card_right">{Math.round(temp)}°</p>
+                     <p className="hour_card_right">{Math.round(temp)}{unitSymbol}</p>
                 </div>
                 );
                     })}

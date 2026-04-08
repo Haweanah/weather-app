@@ -8,9 +8,8 @@ export default function Header (props) {
     e.preventDefault();
     props.handleSearch(searchInput.trim());
     setSearchInput("")
-
-
   }
+
     return (
         <section>
         <header>
@@ -18,15 +17,25 @@ export default function Header (props) {
             <img src="/images/logo.svg" alt="weather app logo" />
         </div>
         
-        <div className="units">
-            <img src="/images/icon-units.svg" alt="icon units logo" />
-            <span>Units</span>
-            <img src="/images/icon-dropdown.svg" alt="drop down arrow" />
-        </div>
-        </header>
+       <div className="units">
+  <img src="/images/icon-units.svg" alt="units icon" />
+  <span>Units</span>
 
-        <div className="header-search-section">
-            <h1>How's the sky looking today?
+  <select
+    value={props.unit}
+    onChange={(e) => props.setUnit(e.target.value)}
+    className="units_select"
+  >
+    <option value="metric">°C</option>
+    <option value="imperial">°F</option>
+  </select>
+
+  <img src="/images/icon-dropdown.svg" alt="dropdown arrow" />
+</div>             
+</header>
+
+<div className="header-search-section">
+    <h1>How's the sky looking today?
 </h1>
 <form 
 onSubmit={handleSubmit

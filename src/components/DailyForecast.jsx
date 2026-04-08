@@ -1,4 +1,4 @@
-export default function DailyForecast({ forecastData }) {
+export default function DailyForecast({ forecastData, unit }) {
   if (!Array.isArray(forecastData) || forecastData.length ===0) {
     return <p>Loading Daily Forecast...</p>
   }
@@ -18,6 +18,8 @@ export default function DailyForecast({ forecastData }) {
     return "/images/icon-unknown.webp";
   };
 
+  const unitSymbol = unit === "metric" ? "°" : "°";
+
   return (
     <section className="daily_forecast">
        {dailyForecast.slice(0, 7).map((item, index) => {
@@ -35,7 +37,7 @@ export default function DailyForecast({ forecastData }) {
             <div className="weather_condition">
               <img src={iconSrc} alt="weather icon" />
             </div>
-            <p>{Math.round(temp)}°</p>
+            <p>{Math.round(temp)}{unitSymbol}</p>
           </div>
         );
       })}
