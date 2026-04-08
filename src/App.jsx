@@ -11,6 +11,8 @@ function App() {
   const [weatherData, setWeatherData] = useState({})
 
   const [forecastData, setForecastData] = useState([])
+
+  const [unit, setUnit] = useState("metric"); 
   
 
   useEffect(() => {
@@ -19,7 +21,7 @@ function App() {
     async function fetchWeather() {
       const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
       const res = await fetch (
-         `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=metric`
+         `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=${unit}`
       )
       console.log(res);
 
@@ -28,7 +30,7 @@ function App() {
       setWeatherData(data)
 
    const forecastRes = await fetch(
-  `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=metric`
+  `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=${unit}`
 );
 
 console.log(forecastRes)
@@ -57,6 +59,8 @@ console.log(forecastRes)
     
     <Header
     handleSearch={handleSearch}
+    unit={unit}
+    setUnit={setUnit}
     />
     <CurrentWeather
     weatherData={weatherData}
