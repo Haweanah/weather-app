@@ -10,12 +10,16 @@ function App() {
   const [weatherData, setWeatherData] = useState({})
   const [forecastData, setForecastData] = useState([])
   const [unit, setUnit] = useState("metric")
-  const [cityFound, setCityFound] =  useState(false)
+  const [cityFound, setCityFound] =  useState(null)
+  const [loading, setLoading] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false);
   
   useEffect(() => {
     if (!searchedCity) return;
 
     async function fetchWeather() {
+      setLoading(true)
+      setHasSearched(false);
       const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
       
       // Current weather
@@ -29,6 +33,8 @@ function App() {
           setCityFound(false);
           setWeatherData({});
           setForecastData([]);
+          setHasSearched(true);
+          setLoading(false)
           return;
         }
 
@@ -48,6 +54,7 @@ function App() {
 
       const forecastResData = await forecastRes.json();
       setForecastData(forecastResData.list);
+      setLoading(false);
     } 
     
     fetchWeather()
@@ -63,9 +70,11 @@ function App() {
         handleSearch={handleSearch}
         unit={unit}
         setUnit={setUnit}
+        loading={loading}
+        hasSearched={hasSearched}
       />
 
-      {cityFound && (
+      {cityFound === true && (
         <>
           <CurrentWeather
             weatherData={weatherData}
@@ -73,19 +82,19 @@ function App() {
             setUnit={setUnit}
           />
           <DailyForecast
-            weatherData={weatherData}
             forecastData={forecastData}
             unit={unit}
-            setUnit={setUnit}
           />
           <HourlyForecast
-            weatherData={weatherData}
             forecastData={forecastData}
             unit={unit}
-            setUnit={setUnit}
           />
         </>
+      
       )}
+      {cityFound === false && (
+  <p className='no-city'>No search result found!</p>
+)}
     </div>
   )
 }

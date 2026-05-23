@@ -41,11 +41,11 @@ export default function CurrentWeather (props) {
                 </div>
                 <div className="speed">
                     <p>Wind</p>
-                    <span>{Math.round(wind.speed)}km/hr</span>
+                    <span>{Math.round(wind.speed)}{props.unit === "metric" ? " km/hr" : " mph"}</span>
                     </div>
                 <div className="precipitation">
                     <p>Precipitation</p>
-                    <span>{rain?.["1h"] ? rain["1h"] : snow?.["1h"] ? snow["1h"] : 0}mm</span>
+                    <span>{rain?.["1h"] ? rain["1h"] : snow?.["1h"] ? snow["1h"] : 0}{props.unit === "metric" ? " mm" : " in"}</span>
                     </div>
             </article>
 

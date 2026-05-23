@@ -33,7 +33,7 @@ export default function Header (props) {
   <img src="/images/icon-dropdown.svg" alt="dropdown arrow" />
 </div>             
 </header>
-
+{!props.hasSearched && (
 <div className="header-search-section">
     <h1>How's the sky looking today?
 </h1>
@@ -53,12 +53,21 @@ onSubmit={handleSubmit
         />
         
     </div>
+{props.loading && (
+  <div className="searching_box">
+    <div className="loader"></div>
+    <p>Search in progress...</p>
+  </div>
+)}
+
+
+
         <input type="submit" value="Search" 
         disabled={!searchInput.trim()}
         />
 
 </form>
-        </div>
+        </div>)}
         </section>
     )
 }
