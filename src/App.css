@@ -129,6 +129,7 @@ body {
     font-size: 1.3rem;
     border-radius: 8px;
     min-width: 300px;
+    cursor: pointer;
 }
 
 form > .search-input >  input::placeholder {
@@ -148,6 +149,7 @@ form >  input[type="submit"] {
   background-color: var(--clr-Blue-500);
   color: var(--clr-Neutral-200);
   font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .search-input {
@@ -322,6 +324,9 @@ form >  input[type="submit"] {
 .hour_card_left > img {
   width: 10%;
 }
+
+
+/* ---------------- LOADING ---------------- */
 
 .no-city {
   display: flex;
