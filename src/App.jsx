@@ -60,6 +60,7 @@ function App() {
     fetchWeather()
   }, [searchedCity, unit]) // added unit so fetch updates when unit changes
 
+
   function handleSearch(searchInput) {
     setSearchedCity(searchInput)
   }
