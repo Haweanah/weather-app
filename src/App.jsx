@@ -13,19 +13,26 @@ function App() {
   const [cityFound, setCityFound] =  useState(null)
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false);
+  const [apiError, setApiError] = useState(false)
   
   useEffect(() => {
     if (!searchedCity) return;
 
     async function fetchWeather() {
-      setLoading(true)
-      setHasSearched(false);
-      const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
+      try {
+        setLoading(true)
+        setApiError(false)
+         setHasSearched(true);
+         const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
       
       // Current weather
-      const res = await fetch(
+        const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=${unit}`
       )
+
+      if (!res.ok) {
+        throw new Error("Something went wrong")
+      }
 
       const data = await res.json()
       
@@ -36,26 +43,31 @@ function App() {
           setHasSearched(true);
           setLoading(false)
           return;
-        }
-
-        setCityFound(true)
-        setWeatherData(data)
-
       
+      }  
+         setCityFound(true)
+         setWeatherData(data)
+         
       // Forecast
       const forecastRes = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=${unit}`
       )
-      
       if (!forecastRes.ok) {
-        console.error("Forecast request failed");
-        return;
+        throw new Error("Forecast request failed")
       }
 
       const forecastResData = await forecastRes.json();
       setForecastData(forecastResData.list);
       setLoading(false);
-    } 
+    } catch (error) {
+      console.error(error)
+      setApiError(true)
+    } finally {
+      setLoading(false)
+    }
+    }       
+      
+      
     
     fetchWeather()
   }, [searchedCity, unit]) // added unit so fetch updates when unit changes
@@ -96,8 +108,25 @@ function App() {
       {cityFound === false && (
   <p className='no-city'>No search result found!</p>
 )}
+{apiError && (
+        <div className="api-error">
+
+          <img
+            src="/images/logo.svg"
+            alt="weather logo"
+          />
+
+          <h2>Something went wrong. Please try again.</h2>
+          <p>We couldn't connect to the server (API error). please try again in a few moments</p>
+         <button
+            className="retry-btn"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
     </div>
   )
 }
-
+</div>
+  )}
 export default App
