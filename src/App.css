@@ -297,6 +297,28 @@ form >  input[type="submit"] {
   font-size: 1.2rem;
   font-family: "Bricolage Grotesque", sans-serif;
 }
+
+.skeleton-main,
+.skeleton-cards div,
+.skeleton-forecast div {
+  background: #2a2a4a;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: .5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: .5;
+  }
+}
+
 /* ---------------- MAIN CONTAINER ---------------- */
 
 .current-weather-top {
