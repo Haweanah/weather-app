@@ -6,8 +6,8 @@ export default function Header (props) {
     const [showUnits, setShowUnits] = useState(false)
     const [suggestions, setSuggestions] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
+    const [showSuggestions, setShowSuggestions] = useState(false);
    
-
 useEffect(() => {
 
   async function fetchSuggestions() {
@@ -24,7 +24,6 @@ useEffect(() => {
     )
 
     const data = await res.json()
-
     setSuggestions(data)
   }
 
@@ -35,8 +34,10 @@ useEffect(() => {
 
      function handleSubmit(e) {
     e.preventDefault();
-    props.handleSearch(searchInput.trim());
-    setSearchInput("")
+    props.handleSearch(searchInput.trim())
+    setSuggestions([])
+    setSelectedIndex(-1)
+    setShowSuggestions(false)
   }
 
   function handleKeyDown(e) {
@@ -66,6 +67,7 @@ useEffect(() => {
     props.handleSearch(selectedCity.name)
     setSuggestions([])
     setSelectedIndex(-1)
+    setShowSuggestions(false)
   }
 }
 
@@ -239,7 +241,7 @@ useEffect(() => {
   )}
 </div>             
 </header>
-{!props.hasSearched && (
+{
 <div className="header-search-section">
     <h1>How's the sky looking today?
 </h1>
@@ -247,40 +249,50 @@ useEffect(() => {
 onSubmit={handleSubmit
 }
 >
-    <div className="search-input">
-        <img
-        className="search-icon"
-        src="/images/icon-search.svg" alt="search icon" />
-        <input 
-        type="search"
-        value={searchInput}
-        placeholder={`Search for a place..`}
-        onKeyDown={handleKeyDown}
-        onChange={(e) => setSearchInput(e.target.value)}
-        />
-        
-    </div>
-  {
-  suggestions.length > 0 && (
-    <div className="suggestions">
-      {
-        suggestions.map((city, index) => (
+ <div className="search-input">
+  <img
+    className="search-icon"
+    src="/images/icon-search.svg"
+    alt="search icon"
+  />
+
+  <input
+    type="search"
+    value={searchInput}
+    placeholder="Search for a place.."
+    onKeyDown={handleKeyDown}
+    onChange={(e) => {
+      setSearchInput(e.target.value)
+      setShowSuggestions(true)
+    }}
+  />
+
+  {showSuggestions &&
+    searchInput.trim() &&
+    suggestions.length > 0 && (
+      <div className="suggestions">
+        {suggestions.map((city, index) => (
           <p
             key={index}
-            className={selectedIndex === index ? "active_suggestion" : ""}
+            className={
+              selectedIndex === index
+                ? "active_suggestion"
+                : ""
+            }
             onClick={() => {
               setSearchInput(city.name)
               props.handleSearch(city.name)
               setSuggestions([])
+              setSelectedIndex(-1)
+              setShowSuggestions(false)
             }}
           >
             {city.name}, {city.country}
           </p>
-        ))
-      }
-    </div>
-  )
-}
+        ))}
+      </div>
+  )}
+</div>
 {props.loading && (
   <div className="searching_box">
     <div className="loader"></div>
@@ -295,7 +307,7 @@ onSubmit={handleSubmit
         />
 
 </form>
-        </div>)}
+        </div>}
         </section>
     )
 }

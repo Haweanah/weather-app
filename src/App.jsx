@@ -3,7 +3,6 @@ import Header from './components/Header'
 import CurrentWeather from './components/CurrentWeather'
 import DailyForecast from './components/DailyForecast'
 import HourlyForecast from './components/HourlyForecast'
-import LoadingSkeleton from './components/LoadingSkeleton'
 import './App.css'
 
 function App() {
@@ -11,86 +10,73 @@ function App() {
   const [weatherData, setWeatherData] = useState({})
   const [forecastData, setForecastData] = useState([])
   const [unit, setUnit] = useState("metric")
-  const [cityFound, setCityFound] = useState(null)
+  const [cityFound, setCityFound] =  useState(null)
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [apiError, setApiError] = useState(false)
-  const [initialLoading, setInitialLoading] = useState(true)
-
+  
+  
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const lat = position.coords.latitude
-      const lon = position.coords.longitude
-      const apiKey = "YOUR_API_KEY"
-
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`
-      )
-
-      const data = await res.json()
-      setWeatherData(data)
-      setCityFound(true)
-
-      const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`
-      )
-
-      const forecastData = await forecastRes.json()
-      setForecastData(forecastData.list)
-
-      setInitialLoading(false)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!searchedCity) return
+    if (!searchedCity) return;
 
     async function fetchWeather() {
       try {
         setLoading(true)
         setApiError(false)
-        setHasSearched(true)
-
-        const apiKey = "YOUR_API_KEY"
-
+         setHasSearched(true);
+         const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
+      
+      // Current weather
         const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=${unit}`
-        )
+        `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=${unit}`
+      )
 
-        if (!res.ok) throw new Error("Weather request failed")
-
-        const data = await res.json()
-
-        if (data.cod === "404") {
-          setCityFound(false)
-          setWeatherData({})
-          setForecastData([])
-          setLoading(false)
-          return
-        }
-
-        setCityFound(true)
-        setWeatherData(data)
-
-        const forecastRes = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=${unit}`
-        )
-
-        const forecastResData = await forecastRes.json()
-        setForecastData(forecastResData.list)
-
-      } catch (err) {
-        setApiError(true)
-      } finally {
-        setLoading(false)
+      if (!res.ok) {
+        throw new Error("Something went wrong")
       }
-    }
 
+      const data = await res.json()
+      
+        if (data.cod === "404") {
+          setCityFound(false);
+          setWeatherData({});
+          setForecastData([]);
+          setHasSearched(true);
+          setLoading(false)
+          return;
+      
+      }  
+         setCityFound(true)
+         setWeatherData(data)
+         
+      // Forecast
+      const forecastRes = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=${unit}`
+      )
+      if (!forecastRes.ok) {
+        throw new Error("Forecast request failed")
+      }
+
+      const forecastResData = await forecastRes.json();
+      setForecastData(forecastResData.list);
+      setLoading(false);
+    } catch (error) {
+      console.error(error)
+      setApiError(true)
+    } finally {
+      setLoading(false)
+    }
+    }       
+      
+      
+    
     fetchWeather()
-  }, [searchedCity, unit])
+  }, [searchedCity, unit]) // added unit so fetch updates when unit changes
+
 
   function handleSearch(searchInput) {
     setSearchedCity(searchInput)
+    setHasSearched(true)
   }
 
   return (
@@ -102,30 +88,54 @@ function App() {
         loading={loading}
         hasSearched={hasSearched}
       />
+      
 
-      {/* ✅ FIX: conditional rendering goes like this */}
-      {initialLoading && <LoadingSkeleton />}
-
-      {!initialLoading && cityFound === true && (
-        <>
-          <CurrentWeather weatherData={weatherData} unit={unit} />
-          <DailyForecast forecastData={forecastData} unit={unit} />
-          <HourlyForecast forecastData={forecastData} unit={unit} />
-        </>
-      )}
-
-      {!initialLoading && cityFound === false && (
-        <p className="no-city">No search result found!</p>
-      )}
-
-      {!initialLoading && apiError && (
-        <div className="api-error">
-          <h2>Something went wrong</h2>
-          <button onClick={() => window.location.reload()}>Retry</button>
+      {cityFound === true && (
+        <div className='des_container'>
+          <div className="des_container_left">
+            <CurrentWeather
+            weatherData={weatherData}
+            unit={unit}
+            setUnit={setUnit}
+          />
+          <DailyForecast
+            forecastData={forecastData}
+            unit={unit}
+          />
+          </div>
+          
+          <div className="des_container_right">
+            <HourlyForecast
+            forecastData={forecastData}
+            unit={unit}
+          />
+          </div>
+          
         </div>
+      
       )}
+      {cityFound === false && (
+  <p className='no-city'>No search result found!</p>
+)}
+{apiError && (
+        <div className="api-error">
+
+          <img
+            src="/images/logo.svg"
+            alt="weather logo"
+          />
+
+          <h2>Something went wrong. Please try again.</h2>
+          <p>We couldn't connect to the server (API error). please try again in a few moments</p>
+         <button
+            className="retry-btn"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
     </div>
   )
 }
-
+</div>
+  )}
 export default App
