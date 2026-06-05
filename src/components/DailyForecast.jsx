@@ -1,9 +1,4 @@
 export default function DailyForecast({ forecastData, unit }) {
-  if (!Array.isArray(forecastData) || forecastData.length ===0) {
-    return <p>Loading Daily Forecast...</p>
-  }
-
-
 
   const dailyForecast = forecastData.filter((_, index) => index % 8 === 0)
 

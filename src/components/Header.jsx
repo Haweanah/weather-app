@@ -6,38 +6,51 @@ export default function Header (props) {
     const [showUnits, setShowUnits] = useState(false)
     const [suggestions, setSuggestions] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(-1)
-    const [showSuggestions, setShowSuggestions] = useState(false);
-   
+     const [suggestionsLoading, setSuggestionsLoading] = useState(false)
+
 useEffect(() => {
 
   async function fetchSuggestions() {
 
     if (!searchInput.trim()) {
       setSuggestions([])
+      setSuggestionsLoading(false)
       return
     }
+    if (searchInput === props.searchedCity) {
+  setSuggestions([])
+  return
+}
+    setSuggestionsLoading(true)
 
     const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
-
-    const res = await fetch(
+    try {
+       const res = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${searchInput}&limit=5&appid=${apiKey}`
     )
-
-    const data = await res.json()
+     const data = await res.json()
     setSuggestions(data)
+    } catch (error) {
+      console.error(error)
+      setSuggestions([])
+    } finally {
+      setSuggestionsLoading(false)
+    }   
   }
 
   fetchSuggestions()
 
-}, [searchInput])
+}, [searchInput, props.searchedCity])
 
 
      function handleSubmit(e) {
     e.preventDefault();
-    props.handleSearch(searchInput.trim())
+    const trimmed = searchInput.trim()
+    if (!trimmed) return;
+    props.handleSearch(trimmed)
+    setSearchInput("")
     setSuggestions([])
     setSelectedIndex(-1)
-    setShowSuggestions(false)
   }
 
   function handleKeyDown(e) {
@@ -63,11 +76,10 @@ useEffect(() => {
   if (e.key === "Enter" && selectedIndex >= 0) {
     e.preventDefault()
     const selectedCity = suggestions[selectedIndex]
-    setSearchInput(selectedCity.name)
     props.handleSearch(selectedCity.name)
     setSuggestions([])
     setSelectedIndex(-1)
-    setShowSuggestions(false)
+    
   }
 }
 
@@ -241,7 +253,7 @@ useEffect(() => {
   )}
 </div>             
 </header>
-{
+{!props.apiError &&
 <div className="header-search-section">
     <h1>How's the sky looking today?
 </h1>
@@ -249,50 +261,51 @@ useEffect(() => {
 onSubmit={handleSubmit
 }
 >
- <div className="search-input">
-  <img
-    className="search-icon"
-    src="/images/icon-search.svg"
-    alt="search icon"
-  />
+    <div className="search-input">
+        <img
+        className="search-icon"
+        src="/images/icon-search.svg" alt="search icon" />
+        <input 
+        type="search"
+        value={searchInput}
+        placeholder={`Search for a place..`}
+        onKeyDown={handleKeyDown}
+        onChange={(e) => {
+        setSearchInput(e.target.value);
+        
+        }}
+        />
+       {searchInput.trim() && (
+  <div className="suggestions">
 
-  <input
-    type="search"
-    value={searchInput}
-    placeholder="Search for a place.."
-    onKeyDown={handleKeyDown}
-    onChange={(e) => {
-      setSearchInput(e.target.value)
-      setShowSuggestions(true)
-    }}
-  />
-
-  {showSuggestions &&
-    searchInput.trim() &&
-    suggestions.length > 0 && (
-      <div className="suggestions">
-        {suggestions.map((city, index) => (
-          <p
-            key={index}
-            className={
-              selectedIndex === index
-                ? "active_suggestion"
-                : ""
-            }
-            onClick={() => {
-              setSearchInput(city.name)
-              props.handleSearch(city.name)
-              setSuggestions([])
-              setSelectedIndex(-1)
-              setShowSuggestions(false)
-            }}
-          >
-            {city.name}, {city.country}
-          </p>
-        ))}
+    {suggestionsLoading && (
+      <div className="suggestion-skeleton">
+        <div className="sk-line"></div>
+        <div className="sk-line"></div>
+        <div className="sk-line"></div>
       </div>
-  )}
-</div>
+    )}
+
+    {!suggestionsLoading &&
+      suggestions.map((city, index) => (
+        <p
+          key={index}
+          className={selectedIndex === index ? "active_suggestion" : ""}
+          onClick={() => {
+            setSearchInput(city.name)
+            props.handleSearch(city.name)
+            setSuggestions([])
+            setSelectedIndex(-1)
+          }}
+        >
+          {city.name}, {city.country}
+        </p>
+      ))}
+  </div>
+)}
+        
+    </div>
+  
 {props.loading && (
   <div className="searching_box">
     <div className="loader"></div>

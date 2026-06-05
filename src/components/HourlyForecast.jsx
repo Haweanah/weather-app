@@ -13,7 +13,7 @@ export default function HourlyForecast ({ forecastData, unit }) {
     const activeDay = selectedDay || firstDay 
 
   if (!Array.isArray(forecastData) || forecastData.length === 0) {
-    return <p>Loading Hourly forecast</p>;
+    return ;
   }
 
    

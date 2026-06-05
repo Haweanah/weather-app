@@ -235,6 +235,8 @@ form >  input[type="submit"] {
 
 .search-input {
   position: relative;
+  width: 100%;
+  max-width: 400px;
 }
 
 .search-icon {
@@ -244,10 +246,6 @@ form >  input[type="submit"] {
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
-  -webkit-transform: translateY(-50%);
-  -moz-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
 }
 
 .search-input {
@@ -256,8 +254,9 @@ form >  input[type="submit"] {
 
 .suggestions {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 6px);
   left: 0;
+  right: 0;
   width: 100%;
   background-color: var(--clr-Neutral-800);
   border: 1px solid var(--clr-Neutral-600);
@@ -280,6 +279,25 @@ form >  input[type="submit"] {
   background-color: #333;
 }
 
+.suggestion-skeleton {
+  padding: 12px;
+}
+
+.sk-line {
+  height: 14px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: var(--clr-Neutral-600);
+  animation: pulse 1.2s infinite;
+  -webkit-animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
 /* ---------------- API ERROR ---------------- */
 
 .api-error {
@@ -293,14 +311,51 @@ form >  input[type="submit"] {
 }
 
 .api-error img {
-  width: 120px;
+  width: 80px;
+  height: auto;
 }
 
 .api-error p {
   color: var(--clr-Neutral-0);
   font-size: 1.2rem;
   font-family: "Bricolage Grotesque", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
+
+.api-error p {
+  display: flex;
+  justify-self: center;
+  text-align: center;
+  text-wrap: wrap;
+  width: 500px;
+}
+
+.retry {
+  display: flex;
+  gap: 1rem;
+}
+
+.retry-btn {
+  display: flex;
+  flex-shrink: 0;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--clr-Neutral-600);
+  color: var(--clr-Neutral-300);
+  padding: 0.2rem;
+  border-radius: 8px;
+}
+
+.retry-btn img {
+  display: flex;
+  flex-shrink: 0;
+  width: 12px;
+  height: auto;
+  color: var(--clr-Neutral-300);
+ }
 
 .skeleton-main,
 .skeleton-cards div,
@@ -534,7 +589,21 @@ form >  input[type="submit"] {
 
 /* ---------------- Desktop ---------------- */
 @media (min-width: 1024px) {
- 
+  .des_container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .des_container_left {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+  }
+
+  .des_container_right {
+    display: flex;
+    height: 100vh;
+  }
 }
 
 /* ---------------- FOOTER ---------------- */
