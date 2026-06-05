@@ -16,10 +16,12 @@ export default function CurrentWeather (props) {
   return (
     <section className="current-weather">
       <article className="current-weather-top">
-        <h2>{name}, {country}</h2>
+       <div className="current-weather-top-left">
+         <h2>{name}, {country}</h2>
 
         <p className="date">{formattedDate}</p>
 
+       </div>
         <div className="brightness">
           <img
             className="sun-image"
