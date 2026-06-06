@@ -680,6 +680,13 @@ form >  input[type="submit"] {
 
 /* ---------------- FOOTER ---------------- */
 
-.attribution { font-size: 11px; text-align: center; }
+.attribution { 
+  font-size: 18px; 
+  text-align: center;
+  padding: 1rem;
+  color: var(--clr-Orange-500); 
+}
     
-.attribution a { color: hsl(228, 45%, 44%); }
+.attribution a { 
+  color: var(--clr-Neutral-200); 
+}

@@ -6,6 +6,7 @@ import HourlyForecast from './components/HourlyForecast'
 import apiErrorLogo from '../public/images/icon-error.svg'
 import retryIcon from '../public/images/icon-retry.svg'
 import './App.css'
+import Attribution from './components/Attribution.jsx'
 
 function App() {
   const [searchedCity, setSearchedCity] = useState("")
@@ -16,6 +17,8 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [apiError, setApiError] = useState(false)
+  const [coordinates, setCoordinates] = useState(null)
+  const [hourlyData, setHourlyData] = useState([])
   
   useEffect(() => {
   navigator.geolocation.getCurrentPosition(
@@ -23,7 +26,7 @@ function App() {
       const lat = position.coords.latitude
       const lon = position.coords.longitude
 
-      const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
+      const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
       try {
         const res = await fetch(
@@ -43,7 +46,7 @@ function App() {
       setLoading(false)
     }
   )
-}, [searchedCity, unit])
+}, [unit])
 
   useEffect(() => {
     if (!searchedCity) return;
@@ -59,6 +62,8 @@ function App() {
         const res = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${searchedCity}&appid=${apiKey}&units=${unit}`
       )
+
+    
 
       if (!res.ok) {
         throw new Error("Something went wrong")
@@ -77,7 +82,15 @@ function App() {
       }  
          setCityFound(true)
          setWeatherData(data)
+
+         const { lat, lon } = data.coord
+
+          setCoordinates({
+            lat,
+            lon
+          })
          
+          
       // Forecast
       const forecastRes = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${searchedCity}&appid=${apiKey}&units=${unit}`
@@ -100,7 +113,35 @@ function App() {
       
     
     fetchWeather()
-  }, [searchedCity, unit]) // added unit so fetch updates when unit changes
+  }, [searchedCity, unit]) 
+
+  useEffect(() => {
+  if (!coordinates) return
+
+  async function fetchHourlyData() {
+    try {
+      const { lat, lon } = coordinates
+
+      const hourlyRes = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code&forecast_days=7`
+      )
+
+      const hourlyJson = await hourlyRes.json()
+
+      setHourlyData(
+        hourlyJson.hourly.time.map((time, index) => ({
+          time,
+          temp: hourlyJson.hourly.temperature_2m[index],
+          weatherCode: hourlyJson.hourly.weather_code[index]
+        }))
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  fetchHourlyData()
+}, [coordinates])
 
 
   function handleSearch(searchInput) {
@@ -180,7 +221,7 @@ function App() {
           
           <div className="des_container_right">
             <HourlyForecast
-            forecastData={forecastData}
+            hourlyData={hourlyData}
             unit={unit}
           />
           </div>
@@ -210,6 +251,8 @@ function App() {
     </div>
   )
 }
+
+<Attribution/>
 </div>
   )}
 export default App

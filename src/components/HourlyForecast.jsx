@@ -1,29 +1,27 @@
 import { useState } from "react";
-export default function HourlyForecast ({ forecastData, unit }) {   
-
+export default function HourlyForecast ({ hourlyData, unit }) {   
   const [selectedDay, setSelectedDay] = useState("");
 
  const firstDay =
-  forecastData.length > 0
-    ? new Date(forecastData[0].dt_txt).toLocaleDateString("en-NG", {
+  hourlyData.length > 0
+    ? new Date(hourlyData[0].time).toLocaleDateString("en-NG", {
         weekday: "long",
       })
     : "";
 
-    const activeDay = selectedDay || firstDay 
+  const activeDay = selectedDay || firstDay 
+    
 
-  if (!Array.isArray(forecastData) || forecastData.length === 0) {
-    return ;
+  if (!Array.isArray(hourlyData) || hourlyData.length === 0) {
+    return null;
   }
 
-   
-
-    const days = [
+const days = [
   "All",
   ...Array.from(
     new Set(
-    forecastData.map((item) =>
-      new Date(item.dt_txt).toLocaleDateString("en-NG", {
+   hourlyData.map((item) =>
+      new Date(item.time).toLocaleDateString("en-NG", {
         weekday: "long",
       })
     )
@@ -33,28 +31,34 @@ export default function HourlyForecast ({ forecastData, unit }) {
 
 const filteredData =
   activeDay === "All"
-    ? forecastData
-    : forecastData.filter(
+    ? hourlyData
+    : hourlyData.filter(
         (item) =>
-          new Date(item.dt_txt).toLocaleDateString("en-NG", {
+          new Date(item.time).toLocaleDateString("en-NG", {
             weekday: "long",
           }) === activeDay
       );
-    
-    const hourly_data = filteredData.slice(0, 8)
-    const getWeatherIcon = (main) => {
-    if (main === "Clear") return "/images/icon-sunny.webp";
-    if (main === "Clouds") return "/images/icon-partly-cloudy.webp";
-    if (main === "Rain") return "/images/icon-rain.webp";
-    if (main === "Drizzle") return "/images/icon-drizzle.webp";
-    if (main === "Thunderstorm") return "/images/icon-storm.webp";
-    return "/images/icon-unknown.webp";
-  };
+      
+   const hourly_data = filteredData.slice(0, 24)
 
+   
   const unitSymbol = unit === "metric" ? "°" : "°";
 
   
+  const getWeatherIcon = (code) => {
+  if (code === 0) return "/images/icon-sunny.webp";
 
+  if ([1, 2, 3].includes(code))
+    return "/images/icon-partly-cloudy.webp";
+
+  if ([51, 53, 55, 61, 63, 65].includes(code))
+    return "/images/icon-rain.webp";
+
+  if ([95, 96, 99].includes(code))
+    return "/images/icon-storm.webp";
+
+  return "/images/icon-unknown.webp";
+};
 
     return (
 
@@ -76,14 +80,13 @@ const filteredData =
             
             <div className="hourly_list">
                 {hourly_data.map((item, index) => {
-                const time = new Date(item.dt_txt).toLocaleTimeString("en-NG", {
+                const time = new Date(item.time).toLocaleTimeString("en-NG", {
                     hour: "numeric",
+                    minute: "2-digit",
                     hour12: true,
                 })
 
-                const temp = item.main.temp;
-                const weatherMain = item.weather[0].main;
-                const iconSrc = getWeatherIcon(weatherMain);
+                const iconSrc = getWeatherIcon(item.weatherCode);
 
                  return (
                     
@@ -94,7 +97,7 @@ const filteredData =
                     <p>{time}</p>
                    
                     </div>
-                     <p className="hour_card_right">{Math.round(temp)}{unitSymbol}</p>
+                     <p className="hour_card_right">{Math.round(item.temp)}{unitSymbol}</p>
                 </div>
                 );
                     })}
