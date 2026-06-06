@@ -129,7 +129,7 @@ I would also like to improve performance by introducing caching and reducing unn
 **Hauwa Abdulkadir**
 
 * GitHub: https://github.com/haweanah
-* Frontend Mentor: Add your Frontend Mentor profile link
+* Frontend Mentor: https://www.frontendmentor.io/profile/Haweanah
 * LinkedIn: https://www.linkedin.com/in/hauwa-abdulkadir-6281b72bb/
 
 ## Acknowledgements
