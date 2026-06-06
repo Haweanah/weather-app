@@ -40,8 +40,8 @@ Users should be able to:
  
 ### Links
 
-* Solution URL: 
-* Live Site URL: Add your deployed site URL here
+* Solution URL: https://www.frontendmentor.io/challenges/weather-app-K1FhddVm49?tab=report
+* Live Site URL: https://haweanah-weather-app.onrender.com/
 
 ## My Process
 
