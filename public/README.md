@@ -1,103 +1,139 @@
-# Frontend Mentor - Weather app
+# Frontend Mentor - Weather App Solution
 
-![Design preview for the Weather app coding challenge](./preview.jpg)
+This is my solution to the Frontend Mentor Weather App challenge. The project allowed me to practice working with APIs, handling asynchronous data in React, managing application state, and building a responsive user interface that provides real-time weather information.
 
-## Welcome! 👋
+## Table of Contents
 
-Thanks for checking out this coding challenge.
+* [Overview](#overview)
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+  * [The Challenge](#the-challenge)
+  * [Screenshot](#screenshot)
+  * [Links](#links)
+* [My Process](#my-process)
 
-**To do this challenge, you need a good understanding of HTML, CSS, and JavaScript.**
+  * [Built With](#built-with)
+  * [What I Learned](#what-i-learned)
+  * [Challenges Faced](#challenges-faced)
+  * [Continued Development](#continued-development)
+* [Author](#author)
 
-## The challenge
+## Overview
 
-Build a weather app using the [Open-Meteo API](https://open-meteo.com/) and get it looking as close to the design as possible.
+### The Challenge
 
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
+Users should be able to:
 
-Your users should be able to:
+* Search for weather information by entering a city name
+* View current weather conditions including temperature, weather icon, date, and location
+* See additional weather details such as humidity, wind speed, precipitation, and feels-like temperature
+* View a multi-day weather forecast
+* View hourly weather forecasts
+* Switch between Metric and Imperial measurement units
+* Receive feedback when a city cannot be found
+* See loading states while data is being fetched
+* View a responsive layout that works across desktop, tablet, and mobile devices
+* Experience hover and focus states for interactive elements
 
-- Search for weather information by entering a location in the search bar
-- View current weather conditions including temperature, weather icon, and location details
-- See additional weather metrics like "feels like" temperature, humidity percentage, wind speed, and precipitation amounts
-- Browse a 7-day weather forecast with daily high/low temperatures and weather icons
-- View an hourly forecast showing temperature changes throughout the day
-- Switch between different days of the week using the day selector in the hourly forecast section
-- Toggle between Imperial and Metric measurement units via the units dropdown
-- View the optimal layout for the interface depending on their device's screen size
-- See hover and focus states for all interactive elements on the page
+### Screenshot
 
-## Getting started
+![Weather App Screenshot](./screenshot.png)
+ 
+### Links
 
-### What's included
+* Solution URL: 
+* Live Site URL: Add your deployed site URL here
 
-Your task is to build out the project to the designs inside the `/design` folder. You will find both a mobile and a desktop version of the design.
+## My Process
 
-**In your download:**
-- Mobile and desktop designs (JPG format)
-- All required assets in the `/assets` folder
-- Variable and static font files (or link to Google Fonts)
-- `style-guide.md` with colors, fonts, and other design specs
+### Built With
 
-**Want more accurate builds?** The designs are in JPG static format, which means you'll need to use your best judgment for styles such as `font-size`, `padding`, and `margin`. If you'd like the Figma design file to help build a more accurate solution faster, you can [subscribe as a PRO member](https://www.frontendmentor.io/pro).
+* React
+* JavaScript (ES6+)
+* CSS3
+* Flexbox
+* CSS Grid
+* Mobile-first workflow
+* OpenWeather API
+* Open-Meteo API
+* Vite
 
-### API setup
+## What I Learned
 
-This project uses the [Open-Meteo API](https://open-meteo.com/) to fetch weather data.
+This project helped me become more comfortable working with multiple APIs in a single application. I learned how to:
 
-**Good news:** Open-Meteo is completely free and doesn't require an API key! You can start making requests right away.
+* Fetch and combine data from different API sources
+* Manage multiple loading and error states
+* Work with React's `useEffect` hook for data fetching
+* Handle asynchronous operations more effectively
+* Structure a React application using reusable components
+* Implement responsive layouts using Flexbox and CSS Grid
 
-- **API Documentation:** [https://open-meteo.com/en/docs](https://open-meteo.com/en/docs)
-- **No rate limits** for reasonable personal use
-- Example endpoint: `https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true`
+One area I was particularly proud of was handling location-based weather searches and fetching related forecast data only after obtaining the required coordinates.
 
-Check their documentation for all available weather parameters and location search capabilities.
+```javascript
+useEffect(() => {
+  if (!coordinates) return;
 
-## Building your project
+  async function fetchHourlyData() {
+    const { lat, lon } = coordinates;
 
-Feel free to use any workflow that you feel comfortable with. Below is a suggested process, but do not feel like you need to follow these steps:
+    const response = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code&forecast_days=7`
+    );
 
-1. Initialize your project as a public repository on [GitHub](https://github.com/). Creating a repo will make it easier to share your code with the community if you need help. If you're not sure how to do this, [have a read-through of this Try Git resource](https://try.github.io/).
-2. Configure your repository to publish your code to a web address. This will also be useful if you need some help during a challenge as you can share the URL for your project with your repo URL. There are a number of ways to do this, and we provide some recommendations below.
-3. Look through the designs to start planning out how you'll tackle the project. This step is crucial to help you think ahead for CSS classes to create reusable styles.
-4. Before adding any styles, structure your content with HTML. Writing your HTML first can help focus your attention on creating well-structured content.
-5. Write out the base styles for your project, including general content styles, such as `font-family` and `font-size`.
-6. Start adding styles to the top of the page and work down. Only move on to the next section once you're happy you've completed the area you're working on.
+    const data = await response.json();
 
-**Need help?** [Join our community](https://www.frontendmentor.io/community) and ask questions in the **#help** channel.
+    setHourlyData(
+      data.hourly.time.map((time, index) => ({
+        time,
+        temp: data.hourly.temperature_2m[index],
+        weatherCode: data.hourly.weather_code[index]
+      }))
+    );
+  }
 
-## Deploying your project
+  fetchHourlyData();
+}, [coordinates]);
+```
 
-As mentioned above, there are many ways to host your project for free. Our recommended hosts are:
+## Challenges Faced
 
-- [GitHub Pages](https://pages.github.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
+One of the biggest challenges was managing the different loading states for current weather, daily forecasts, and hourly forecasts without causing unnecessary renders or displaying incomplete information.
 
-You can host your site using one of these solutions or any of our other trusted providers. [Read more about our recommended and trusted hosts](https://medium.com/frontend-mentor/frontend-mentor-trusted-hosting-providers-bf000dfebe).
+I also spent time improving the user experience by:
 
-## Submitting your solution
+* Creating loading skeletons
+* Handling API failures gracefully
+* Displaying helpful error messages
+* Improving search suggestions and user interactions
 
-Submit your solution on the platform for the rest of the community to see. Follow our ["Complete guide to submitting solutions"](https://medium.com/frontend-mentor/a-complete-guide-to-submitting-solutions-on-frontend-mentor-ac6384162248) for tips on how to do this.
+These challenges gave me a much better understanding of React state management and application flow.
 
-Remember, if you're looking for feedback on your solution, be sure to ask questions when submitting it. The more specific and detailed you are with your questions, the higher the chance you'll get valuable feedback from the community.
+## Continued Development
 
-**We strongly recommend overwriting this `README.md` with a custom one.** We've provided a template inside the [`README-template.md`](./README-template.md) file in this starter code. The template provides a guide for what to add. A custom `README` will help you explain your project and reflect on your learnings.
+There are several features I would like to add in future versions:
 
-## Sharing your solution
+* Weather maps
+* Air quality information
+* Sunrise and sunset times
+* Favorite/saved cities
+* Dark and light themes
+* Search history
+* Progressive Web App (PWA) support
+* More advanced weather charts and visualizations
 
-There are multiple places you can share your solution:
+I would also like to improve performance by introducing caching and reducing unnecessary API requests.
 
-1. Submit it on the platform and share your solution page in the **#finished-projects** channel of our [community](https://www.frontendmentor.io/community)
-2. Tweet [@frontendmentor](https://twitter.com/frontendmentor) and mention **@frontendmentor**, including the repo and live URLs in the tweet. We'd love to take a look at what you've built and help share it around.
-3. Share your solution on other social channels like LinkedIn.
-4. Blog about your experience building your project. Writing about your workflow, technical choices, and talking through your code is a brilliant way to reinforce what you've learned. Great platforms to write on are [dev.to](https://dev.to/), [Hashnode](https://hashnode.com/), and [CodeNewbie](https://community.codenewbie.org/).
+## Author
 
-## Got feedback for us?
+**Hauwa Abdulkadir**
 
-We love receiving feedback! We're always looking to improve our challenges and our platform. So if you have anything you'd like to mention, please email hi[at]frontendmentor[dot]io.
+* GitHub: https://github.com/haweanah
+* Frontend Mentor: Add your Frontend Mentor profile link
+* LinkedIn: https://www.linkedin.com/in/hauwa-abdulkadir-6281b72bb/
 
-**This challenge is completely free. Please share it with anyone who will find it useful for practice.**
+## Acknowledgements
 
-**Have fun building!** 🚀
+A big thank you to Frontend Mentor for providing realistic challenges that help developers practice real-world skills.
+
+This project was also a great opportunity to strengthen my React fundamentals, improve my understanding of API integration, and gain experience building a complete, responsive application from start to finish.
