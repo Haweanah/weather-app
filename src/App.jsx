@@ -56,7 +56,7 @@ function App() {
         setLoading(true)
         setApiError(false)
          setHasSearched(true);
-         const apiKey = "90818551b7ba977c7bba4f1d8d7deffc"
+         const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
       
       // Current weather
         const res = await fetch(
