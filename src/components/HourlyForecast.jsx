@@ -39,8 +39,17 @@ const filteredData =
           }) === activeDay
       );
       
-   const hourly_data = filteredData.slice(0, 24)
+ const now = new Date();
 
+const currentHourIndex = filteredData.findIndex((item) => {
+  const itemTime = new Date(item.time);
+  return itemTime >= now;
+});
+
+const hourly_data =
+  currentHourIndex !== -1
+    ? filteredData.slice(currentHourIndex, currentHourIndex + 8)
+    : [];
    
   const unitSymbol = unit === "metric" ? "°" : "°";
 
